@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Admin;
 use App\Models\category;
 use App\Models\Quiz;
+use App\Models\mcqs;
 
 class AdminController extends Controller
 {
@@ -86,10 +87,13 @@ class AdminController extends Controller
     }
 
     function addquiz(){
+        Session::forget('quizDetails');
+
         $admin= Session::get('admin');
         $categories = category ::get();
         if($admin){
-            $quizName = request('quiz');
+            
+           $quizName = request('quiz');
            $category_id = request('category_id');
             if($quizName && $category_id && !Session::has('quizDetails')){
                 $quiz = new Quiz();
@@ -97,12 +101,42 @@ class AdminController extends Controller
                 $quiz -> category_id = $category_id;
                 if($quiz->save()){
                     Session::put('quizDetails', $quiz);
+                    
+                    
                 }
             }
 
             return view('add-quiz', ["name"=>$admin->name,"categories"=>$categories]);
         }else{
             return redirect('/admin-login');
+        }
+    }
+
+
+    function addmcqs(Request $request){
+         $admin = Session::get('admin');
+        $quiz = Session::get ('quizDetails');
+          $mcq = new mcqs();
+
+        $mcq -> question = $request->question;
+         $mcq -> a = $request->a;
+          $mcq -> b = $request->b;
+           $mcq -> c = $request->c;
+            $mcq -> d = $request->d;
+
+           $mcq -> correct_ans = $request->correct_ans;
+
+           $mcq -> admin_id = $admin->id;
+           $mcq -> quiz_id = $quiz->id;
+           $mcq -> category_id = $quiz->category_id;
+        // return $request;
+        if($mcq->save()){
+            if($request->submit == "add-more"){
+                return redirect(url()->previous());
+            }else{
+                Session::foreget('quizDetails');
+                return redirect('/admin-categories');
+            }
         }
     }
 }
