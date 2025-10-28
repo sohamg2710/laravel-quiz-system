@@ -86,31 +86,39 @@ class AdminController extends Controller
         }
     }
 
-    function addquiz(){
-        Session::forget('quizDetails');
+   function addquiz(){
+    Session::forget('quizDetails');
+    $admin = Session::get('admin');
+    $categories = category::get();
 
-        $admin= Session::get('admin');
-        $categories = category ::get();
-        if($admin){
-            
-           $quizName = request('quiz');
-           $category_id = request('category_id');
-            if($quizName && $category_id && !Session::has('quizDetails')){
+    if($admin){
+        $quizName = request('quiz');
+        $category_id = request('category_id');
+
+        if($quizName && $category_id && !Session::has('quizDetails')){
+
+            // Check if a quiz with same name already exists
+            $existingQuiz = Quiz::where('name', $quizName)->first();
+
+            if($existingQuiz){
+                // Use existing quiz — don’t create duplicate
+                Session::put('quizDetails', $existingQuiz);
+            } else {
+                // Create new quiz only if not exists
                 $quiz = new Quiz();
-                $quiz -> name = $quizName;
-                $quiz -> category_id = $category_id;
+                $quiz->name = $quizName;
+                $quiz->category_id = $category_id;
                 if($quiz->save()){
                     Session::put('quizDetails', $quiz);
-                    
-                    
                 }
             }
-
-            return view('add-quiz', ["name"=>$admin->name,"categories"=>$categories]);
-        }else{
-            return redirect('/admin-login');
         }
+
+        return view('add-quiz', ["name"=>$admin->name,"categories"=>$categories]);
+    } else {
+        return redirect('/admin-login');
     }
+}
 
 
     function addmcqs(Request $request){
@@ -134,8 +142,9 @@ class AdminController extends Controller
             if($request->submit == "add-more"){
                 return redirect(url()->previous());
             }else{
-                Session::foreget('quizDetails');
+                Session::forget('quizDetails');
                 return redirect('/admin-categories');
+              
             }
         }
     }

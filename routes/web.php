@@ -15,4 +15,4 @@ Route::get('/', function () {
  Route::post('/add-category',[AdminController::class,'addCategory']);
  Route::get('/category/delete/{id}',[AdminController::class,'deleteCategory']);
  Route::get('/add-quiz', [AdminController::class,'addquiz']);
- Route::post('/add-mcqs', [AdminController::class,'addmcqs']);
+ Route::post('/add-mcqs', [AdminController::class,'addmcqs']); 
