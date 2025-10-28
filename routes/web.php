@@ -16,3 +16,4 @@ Route::get('/', function () {
  Route::get('/category/delete/{id}',[AdminController::class,'deleteCategory']);
  Route::get('/add-quiz', [AdminController::class,'addquiz']);
  Route::post('/add-mcqs', [AdminController::class,'addmcqs']); 
+ Route::get('/end-quiz', [AdminController::class,'endQuiz']);
