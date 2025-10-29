@@ -28,7 +28,14 @@
             <button type="submit" class="w-full bg-green-500 rounded-xl px-4 py-2 text-white">Add</button>
         </form>
         @else
-        <span class="text-green-500 font-bold">Quiz : {{Session('quizDetails')->name}}</span>
+        <span class="text-green-500 font-bold">Quiz :{{Session('quizDetails')->name}}</span>
+        <P CLASS="text-green-500 font-bold">Total MCQS : {{$totalMCQS}}
+            @if($totalMCQS>0)
+                <a class="text-yellow-500 text-sm" href="/show-quiz/{{ Session('quizDetails')->id }}">Show MCQS</a>
+
+            @endif
+
+        </P>
        <h2 class="text-2xl text-center text-gray-800 mb-6">Add MCQS</h2>
        <form action="add-mcqs" method="post" class="space-y-4">
          <div> 
